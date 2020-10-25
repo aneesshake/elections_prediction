@@ -7,7 +7,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: |
   | First sentence. Second sentence. Third sentence. Fourth sentence.
   |
-  | **Keywords:** forecasting; US 2020 election; Trump;Biden
+  | **Keywords:** forecasting; US 2020 election; Trump; Biden
 output:
   bookdown::pdf_document2:
     citation_package: natbib
@@ -97,4 +97,7 @@ Weaknesses and next steps should also be included.
 
 # References
 
+Tausanovitch, Chris and Lynn Vavreck. 2020. Democracy Fund + UCLA Nationscape, October 10-17, 2019 (version 20200814). Retrieved from [URL].
 
+
+Steven Ruggles, Sarah Flood, Ronald Goeken, Josiah Grover, Erin Meyer, Jose Pacas and Matthew Sobek. IPUMS USA: Version 10.0 [dataset]. Minneapolis, MN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0

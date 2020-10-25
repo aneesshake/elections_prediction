@@ -1,11 +1,11 @@
 #### Preamble ####
-# Purpose: Prepare and clean the survey data downloaded from [...UPDATE ME!!!!!]
-# Author: Rohan Alexander and Sam Caetano [CHANGE THIS TO YOUR NAME!!!!]
-# Data: 22 October 2020
-# Contact: rohan.alexander@utoronto.ca [PROBABLY CHANGE THIS ALSO!!!!]
+# Purpose: Prepare and clean the survey data downloaded from IPUMS. We will be downloading the ACS data from the aforementioned site
+# Author: Anees Shaikh, Jaffa Romain, Lu Mu
+# Data: 02 November 2020
+# Contact: anees.shaikh@mail.utoronto.ca or jaffa.romain@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 
-# - Need to have downloaded the ACS data and saved it to inputs/data
+# - Need to have downloaded the ACS data and saved it to inputs/raw_data/ACS
 # - Don't forget to gitignore it!
 
 
@@ -13,7 +13,7 @@
 library(haven)
 library(tidyverse)
 # Read in the raw data. 
-raw_data <- read_dta("inputs/data/usa_00003.dta"
+raw_data <- read_dta("inputs/raw_data/ACS/usa_00003.dta"
                      )
 # Add the labels
 raw_data <- labelled::to_factor(raw_data)
