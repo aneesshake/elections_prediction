@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Prepare and clean the survey data downloaded from IPUMS. We will be downloading the ACS data from the aforementioned site
+# Purpose: Prepare and clean the survey data downloaded from Nationscape. We will be downloading the nationscape data from the aforementioned site
 # Author: Anees Shaikh, Jaffa Romain, Lu Mu
 # Data: 02 November 2020
 # Contact: anees.shaikh@mail.utoronto.ca or jaffa.romain@mail.utoronto.ca
