@@ -29,7 +29,7 @@ survey_data_reduced <-
 survey_data_reduced %>% 
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data_reduced))  
 
-model <- glm(vote_2020 ~ gender + age + employment + race_ethnicity + household_income + state,
+model <- glm(vote_2020 ~ gender + age + employment + race_ethnicity + household_income + state, family=binomial,
             data = survey_data_reduced)
       
 
