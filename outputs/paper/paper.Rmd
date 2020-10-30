@@ -1,11 +1,11 @@
 ---
-title: "Prediction of the 2020 Presidential Elections"
-subtitle: "Spoiler alert: Biden Wins"
-author: "Anees Shaikh, Jaffa Romain, and Lu Mu"
+title: "Prediction of the 2020 Presidential Election"
+subtitle: "Spoiler Alert: Biden Wins"
+author: "Anees Shaikh, Jaffa Romain, Lu Mu, and Cameron Fryer"
 thanks: "Code and data are available at: https://github.com/aneesshake/elections_prediction"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: |
-  | First sentence. Second sentence. Third sentence. Fourth sentence.
+  | In this paper, we first consider the Democracy Fund + UCLA Nationscape Wave 50 dataset, which contains the results of a survey (conducted June 25-July 1, 2020) on American voter attitudes. Thereafter, the survey data is used to train a model relating voter intent to a few explanatory variables. The model is then applied to the post-stratification dataset; namely, the results of the 2018 1-year American Community Survey (ACS). Since the ACS data pertains to individual persons and their characteristics, the associated use of our model allows us to conclude that Joe Biden will be the next President of the United States.
   |
   | **Keywords:** forecasting; US 2020 election; Trump; Biden
 output:
@@ -24,8 +24,8 @@ library(palmerpenguins)
 
 # Introduction
 
-
-
+To accurately predict the winner of the United States 2020 presidential election is difficult, as many different factors are involved.
+.....
 
 # Data
 
