@@ -7,7 +7,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: |
   | In this paper, we first consider the Democracy Fund + UCLA Nationscape Wave 50 dataset, which contains the results of a survey (conducted June 25-July 1, 2020) on American voter attitudes. Thereafter, the survey data is used to train a model relating voter intent to a few explanatory variables. The model is then applied to the post-stratification dataset; namely, the results of the 2018 1-year American Community Survey (ACS). Since the ACS data pertains to individual persons and their characteristics, the associated use of our model allows us to conclude that Joe Biden will be the next President of the United States.
   |
-  | **Keywords:** forecasting; US 2020 election; Trump; Biden
+  | **Keywords:** forecasting; US 2020 election; Trump; Biden; Multilevel regression with post-stratification
 output:
   bookdown::pdf_document2:
     citation_package: natbib
@@ -74,12 +74,43 @@ Here's a dumb example of how to use some references: In paper we run our analysi
 
 # Results
 
+
+
+All our analysis was done using R[@CiteR]
+
+
+Comparisons to ACS data and Nationscape data
+
+
+throw a few distributions in here to show the differences in distributions, and then tie each one in the discussion section to the potential implications of such a distribution. For instance, ACS data shows that there are more higher income earners than in Nationscape. Our model shows a strong effect between income and voting for a certain candidate.
+
+
+
+## comparison on age
+
+## comparison on race
+
+##
+
 # Discussion
 
 ## First discussion point
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
 
+
+
+Talk about correlations between education and result
+
+To begin this discussion, we begin with a quick explanation of the US Federal voting system. This context is important for us to understand some key points and drawbacks with interpreting our model.
+
+Talk about previous research that has been done with similar models and the output of this model. Our model seems to indicate that Biden is going to win the popular vote. Throw some crap in here about 538 has certain polls that show a slight trump win. Show falling trump approvals and other things like that. This model has been thoroughly researched and has shown to be effective in multiple other contexts(needs citation)
+
+
+
+
+
+
+One of the key things we have to explain here is how the electoral college works. Readers may remember the 2016 US election where Hillary Clinton won the popular vote, however, this didn't mean that she won the federal election. This was due to her not winning the electoral college. The electoral college is a body that is elected to determine who will be the next president of the US. This happened in 2000 when Bush didn't win the popular vote, but did end up winning the electoral college
 ## Second discussion point
 
 ## Third discussion point

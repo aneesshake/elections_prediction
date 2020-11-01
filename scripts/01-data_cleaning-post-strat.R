@@ -13,14 +13,7 @@
 library(haven)
 library(tidyverse)
 # Read in the raw data. 
-raw_data <- read_dta("inputs/raw_data/ACS/usa_00001.dta")
-
-raw_data %>% filter(age >= 18) %>% group_by(age) %>% summarise(n = sum(perwt))
-
-raw_data %>% filter(age >= 18) %>% group_by(age) %>%   tally()
-
-raw_data %>% group_by(educ) %>% tally()
-?summarise(n = sum(perwt))
+raw_data <- read_dta("inputs/raw_data/ACS/usa_00001.dta") %>% filter(age >= 18)
 
 # Add the labels
 raw_data <- labelled::to_factor(raw_data)
@@ -57,13 +50,44 @@ rm(raw_data)
 ##all filtering of the data based on the variables is done prior to this step
 
 
-reduced_data %>% 
-  filter(age >= 18)
-  group_by(age) %>% 
+
+#counts by all vars
+reduced_data %>% group_by_all()
   tally()
 
-reduced_data %>% group_by(region) %>% tally()
+  
+#cell count by age
+reduced_data %>% 
+group_by(age) %>% 
+  tally()
 
+#cell count by region
+reduced_data %>% 
+  group_by(region) %>% 
+  tally()
 
-reduced_data %>% select(region) %>% distinct()         
+#cell count by sex
+reduced_data %>% 
+  group_by(sex) %>% 
+  tally()
+
+#cell count by race
+reduced_data %>% 
+  group_by(race) %>% 
+  tally()
+
+#cell count by education
+reduced_data %>% 
+  group_by(educd) %>% 
+  tally()
+
+#cell count by bpl
+reduced_data %>% 
+  group_by(bpl) %>% 
+  tally()
+
+#cell count by labforce
+reduced_data %>% 
+  group_by(labforce) %>% 
+  tally()
 
