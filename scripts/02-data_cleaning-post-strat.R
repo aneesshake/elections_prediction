@@ -38,17 +38,15 @@ raw_data <- labelled::to_factor(raw_data) %>% filter(!citizen == "not a citizen"
 
 reduced_data <- 
   raw_data %>% 
-  select(region,
+  select(
          stateicp,
          sex, 
          age, 
          race, 
          hispan, 
          bpl,
-         citizen,
-         educd,
-         labforce,
-         hhincome) %>% drop_na()
+         hhincome) %>% 
+  drop_na()
 
 
 
@@ -122,7 +120,7 @@ reduced_data <- reduced_data %>%
 
 
 
-
+saveRDS(reduced_data, file = "inputs/cleaned_data/post-strat.rds")
 
 
 
@@ -140,9 +138,9 @@ group_by(age) %>%
   summarise(num_records = n()) %>% 
   mutate(proportion = num_records/sum(num_records))
 
-#cell count by region
+#cell count by state
 reduced_data %>% 
-  group_by(region) %>% 
+  group_by(stateicp) %>% 
   summarise(num_records = n()) %>% 
   mutate(proportion = num_records/sum(num_records))
 
@@ -160,11 +158,6 @@ reduced_data %>%
   summarise(num_records = n()) %>% 
   mutate(proportion = num_records/sum(num_records))
 
-#cell count by education
-reduced_data %>% 
-  group_by(educd) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
 
 #cell count by bpl
 reduced_data %>% 
@@ -172,9 +165,4 @@ reduced_data %>%
   summarise(num_records = n()) %>% 
   mutate(proportion = num_records/sum(num_records))
 
-#cell count by labforce
-reduced_data %>% 
-  group_by(labforce) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
 

@@ -107,6 +107,8 @@ survey_data_reduced <- survey_data_reduced %>%
                          age <= 64 ~ "45-64",  
                          age >= 65 ~ "65+")) 
 
+saveRDS(survey_data_reduced, file = "inputs/cleaned_data/individual-survey.rds")
+
 ### GRAPHING
 s <- survey_data_reduced %>% 
   select(vote_2016, race) %>% 

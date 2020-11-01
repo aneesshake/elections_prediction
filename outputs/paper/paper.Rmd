@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(tinytex)
 library(readr)
+library(here)
 ```
 
 # Introduction
@@ -70,6 +71,14 @@ The model's output is bounded between 0 and 1,  mapping the outputs into a binar
 
 We are running our regression model using the 'glm()' function in [R]. The fitted model results in the following coefficients:
 ```{r}
+
+
+#Loading in the final model and the coefficents of the model in this cell. Please note that the outputs of those models are being stored in the outputs/model directory. The here package should give you the same result but if it doesn't then you may have to manually enter the same directory.
+final_model <- readRDS(here::here("outputs/model","final_model.rds"))
+coefficients <- readRDS(here::here("outputs/model","coefficients.rds"))
+
+cor <- readRDS(here::here("outputs/model","cor.rds"))
+
 ```
 
 
