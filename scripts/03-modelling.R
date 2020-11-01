@@ -1,7 +1,7 @@
 # Uncomment these (by deleting the #) if you need to install the packages
 #### Preamble ####
 # Purpose: Prepare predictive model using individual survey data We will be downloading the ACS data from the aforementioned site
-# Author: Anees Shaikh, Jaffa Romain, Lu Mu
+# Author: Anees Shaikh, Jaffa Romain, Lu Mu, Cameron Fryer
 # Data: 02 November 2020
 # Contact: anees.shaikh@mail.utoronto.ca or jaffa.romain@mail.utoronto.ca
 # License: MIT
@@ -25,25 +25,23 @@ survey_data_reduced <-
   survey_data_reduced %>%
   mutate(vote_2020 = ifelse(vote_2020 == "Donald Trump", 1, 0))
 
-
+saveRDS(survey_data_reduced, file = "inputs/survey_data.Rda")
 survey_data_reduced %>% 
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data_reduced))  # no class bias for our response variable - results are fairy equal
 
 # building model
 model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state, family=binomial,
             data = survey_data_reduced)
-final_model <- saveRDS(model, file = "outputs/model/final_model.rds")
+saveRDS(model, file = "outputs/model/final_model.rds")
 # Looking for indications of collinearity using correlation matrix of estimated coefficients
 collin <- car::vif(model) # no collinearity 
-cor_test <- saveRDS(model, file = "outputs/model/cor.rds")
 
 
-coefficients <- broom::tidy(model)
-coef <- saveRDS(model, file = "outputs/model/coefficients.rds")
+coeffi <- broom::tidy(model) 
 
 
 
-### TTraining on indivual survey
+### Training on indivual survey
 set.seed(10)
 train <- survey_data_reduced %>% sample_frac(.70)
 predict <- predict(model,train, type = 'response')

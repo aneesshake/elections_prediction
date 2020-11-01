@@ -5,13 +5,8 @@ author: "Anees Shaikh, Jaffa Romain, Lu Mu, and Cameron Fryer"
 thanks: "Code and data are available at: https://github.com/aneesshake/elections_prediction"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: |
-  | In this paper, we first consider the Democracy Fund + UCLA Nationscape Wave 50 dataset, which contains the results of a survey (conducted June 25-July 1, 2020) on American voter attitudes. Thereafter, the survey data is used to train a model relating voter intent to a few explanatory variables. The model is then applied to the post-stratification dataset; namely, the results of the 2018 1-year American Community Survey (ACS). Since the ACS data pertains to individual persons and their characteristics, the associated use of our model allows us to conclude that Joe Biden will be the next President of the United States.
-  |
-<<<<<<< HEAD
-  | **Keywords:** forecasting; US 2020 election; Trump; Biden; Multilevel regression with post-stratification
-=======
-  | **Keywords:** forecasting; US 2020 election; Trump; Biden; multilevel regression with post-stratification
->>>>>>> 1e1dea5001332b04607b2034185fd23725c37ad5
+  | The purpose of this analysis is to forecast the results of the upcoming United States 2020 presidential election. In this paper, we first consider the Democracy Fund + UCLA Nationscape Wave 50 dataset, which contains the results of a survey (conducted June 25-July 1, 2020) on American voter attitudes. Thereafter, the survey data is used to train a model relating voter intent to a few explanatory variables. The model is then applied to the post-stratification dataset; namely, the results of the 2018 1-year American Community Survey (ACS). Since the ACS data pertains to individual persons and their characteristics, the associated use of our model allows us to conclude that Joe Biden will be the next President of the United States.|
+Keywords: forecasting; US 2020 election; Trump; Biden; multilevel regression with post-stratification
 output:
   bookdown::pdf_document2:
     citation_package: natbib
@@ -24,6 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(tinytex)
+library(readr)
 ```
 
 # Introduction
@@ -56,24 +52,24 @@ Talk way more about it.
 
 In order to forecast the popular vote of the U.S 2020 elections, multilevel logistic regression with post-stratification (MRP) was used. The individual survey gives sample data on voters of the general U.S population, and post-stratification allows us to reweight estimates, adjusting bias between our sample and the target population, so that we have a representative sample of likely voters @ForecastingArticle. To achieve this, cells are constructed using variables in the cleaned Nationscape survey such as age, household income, and race. The model is then trained on the survey using the proportions given by the  ACS post-stratification data set. This approach gives us an advantage when attempted to forecast voting, as we can use a broad survey to speak to subsets in the population, and also tends to be less expensive to collect than non-probability samples @rohansmrp. However, using this approach places limitations on how much we can interpret from the estimates. Although we can estimate voting intention in different demographic groups, it doesn't tell us any qualitative information on voting patterns. For example, we might be able to see how different age categories vote, but we won't have a measure of the policy preferences, or their views on the candidates.
 
-Using the Nationscape,  a multilevel logistic regression model can be fitted to the survey data set to model the proportion of voters who will vote for Trump. Logistic regression can be used to model a binary dependent variable, which is the choice between the Republic candidate, Donald Trump, and the Democratic candidate, Joe Biden in our case. This would be the main reason for choosing this model, over another model such as a linear regression model, where the output isn't necessarily binary. However, this imposes limitations. As we cannot take into consideration any other candidates running in the election due to the binary outcome. Another weakness is **** The variable 'vote_2020' in the data set was used as dependent variable, with the variable return 1 for voters intending to vote for Trump, and 0. 
+Using the Nationscape,  a multilevel logistic regression model can be fitted to the survey data set to model the proportion of voters who will vote for Trump.
+Logistic regression can be used to model a binary dependent variable, which is the choice between the Republic candidate, Donald Trump, and the Democratic candidate, Joe Biden in our case. This would be the main reason for choosing this model, over another model such as a linear regression model, where the output isn't necessarily binary. However, this imposes limitations. As we cannot take into consideration any other candidates running in the election due to the binary outcome. Another weakness is **** The variable 'vote_2020' in the data set was used as dependent variable, with the variable return 1 for voters intending to vote for Trump, and 0. 
 
 
-Our model uses the variables pertaining to age, state, race, sex, household income, and whether a voter is Hispanic to predict our dependent variable. 
+Our model uses the variables pertaining to age, state, race, sex, household income, and whether a voter is Hispanic to predict whether a respondent will vote for Trump or Biden in the elections. 
 The model takes the form:
 ***  TO DO: Regression and Other Stories to cite equation **
 $$ Pr(y_i = 1) = logit^-1(X_i *\beta) $$
-where $y_i$ = 1 represents a voter voting for Trump in the election.
-$ Pr(y_i = 1) $ is the probability of a voter choosing to vote for Trump.
-The $ X_i\beta $ are the linear predictors, where $\beta$ represents the fitted coefficients for each independent variable $ X_i $ in the model.
 
-The logit function $logit(x) = log(x/1-x)$ maps the range (0, 1) to $(-\infinity, \infinity)$.
-Its inverse function $ logit^-1(x) = e^x/(1+e^x)$ maps back to the unit range. 
-The model's output is bounded between 0 and 1, unlike a linear regression model, mapping the outputs into a binary outcome, and says that the probability that some person $i$, will vote for Trump depends on their age, sex, state, household income,and whether the voter is Hispanic. 
+where $y_i = 1$ represents a voter voting for Trump in the election.
+$Pr(y_i = 1)$ is the probability of a voter choosing to vote for Trump.
+The $X_i\beta$ are the linear predictors, where $\beta$ represents the fitted coefficients for each independent variable $X_i$ in the model. The coefficient values signify the mean variable changes in a one unit shift in the given variable $\beta$.
+The logit function $logit(x) = log(x/1-x)$ maps the range (0, 1) to $(-\infty, \infty)$.
+Its inverse function $logit^-1(x) = e^x/(1+e^x)$ maps back to the unit range. 
+The model's output is bounded between 0 and 1,  mapping the outputs into a binary outcome. The output tells us the probability that some person $i$, will vote for Trump depends on their age, sex, state, household income, and whether the voter is Hispanic. 
 
-We are running our regresion model using the 'glm()' function in [R]. The fitted model results in the following coefficients:
+We are running our regression model using the 'glm()' function in [R]. The fitted model results in the following coefficients:
 ```{r}
-
 ```
 
 
