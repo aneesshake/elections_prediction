@@ -21,6 +21,7 @@ library(tidyverse)
 library(tinytex)
 library(readr)
 library(here)
+library(patchwork)
 ```
 
 # Introduction
@@ -29,6 +30,16 @@ To accurately predict the winner of the United States 2020 presidential election
 .....
 
 # Data
+
+
+
+```{r, echo=FALSE, include=FALSE}
+#loading in our 2 cleaned datasets
+
+individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
+post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
+
+```
 
 Our data is of penguins (Figure \@ref(fig:bills)).
 
@@ -86,13 +97,7 @@ cor <- readRDS(here::here("outputs/model","cor.rds"))
 
 
 
-```{r, echo=FALSE, include=FALSE}
-#loading in our 2 cleaned datasets
 
-individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
-post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
-
-```
 
 
 
@@ -108,6 +113,36 @@ throw a few distributions in here to show the differences in distributions, and 
 
 
 ## comparison on age
+
+(Figure \@ref(fig:age)) 
+```{r age, fig.cap="Difference in Age distribution between both datasets", echo = FALSE, fig.width=8, fig.height=4}
+
+
+individual_age_dist<- individual_survey %>% 
+  group_by(age) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "Nationscape")
+
+post_strat_age_dist <- post_strat %>% 
+  group_by(age) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "ACS")
+
+individual_age_dist %>% 
+  union(post_strat_age_dist) %>% 
+  ggplot(aes(x = age, y = percentage)) + 
+  geom_col() + 
+  facet_grid(~data_source) + 
+  theme_economist_white() +
+  labs(Title = )
+
+
+```
+
 
 ## comparison on race
 
