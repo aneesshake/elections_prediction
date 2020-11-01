@@ -32,7 +32,12 @@ survey_data_reduced %>%
 # building model
 model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state, family=binomial,
             data = survey_data_reduced)
+
+
 saveRDS(model, file = "outputs/model/final_model.rds")
+
+
+
 # Looking for indications of collinearity using correlation matrix of estimated coefficients
 collin <- car::vif(model) # no collinearity 
 

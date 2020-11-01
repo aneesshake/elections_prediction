@@ -86,6 +86,17 @@ cor <- readRDS(here::here("outputs/model","cor.rds"))
 
 
 
+```{r, echo=FALSE, include=FALSE}
+#loading in our 2 cleaned datasets
+
+individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
+post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
+
+```
+
+
+
+
 All our analysis was done using R[@CiteR]
 
 

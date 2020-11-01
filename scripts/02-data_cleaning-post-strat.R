@@ -126,43 +126,55 @@ saveRDS(reduced_data, file = "inputs/cleaned_data/post-strat.rds")
 
 
 
+#counts by all vars
 
-hhincome #counts by all vars
-reduced_data %>% group_by_all()
-  tally()
+
+cell_counts <- reduced_data %>% 
+  group_by(stateicp,sex,age,race,hhincome_group,foreign_born) %>% 
+  summarise(num_records = n()) %>% ungroup() %>% 
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records)) %>% arrange(desc(proportion))
+
+
+saveRDS(cell_counts,file = "inputs/cleaned_data/cell_counts.rds")
 
   
 #cell count by age
 reduced_data %>% 
 group_by(age) %>% 
   summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records))
 
 #cell count by state
 reduced_data %>% 
   group_by(stateicp) %>% 
   summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records))
 
 
 #cell count by sex
 reduced_data %>% 
   group_by(sex) %>% 
   summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records))
 
 
 #cell count by race
 reduced_data %>% 
   group_by(race)%>% 
   summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records))
 
 
 #cell count by bpl
 reduced_data %>% 
   group_by(foreign_born) %>% 
   summarise(num_records = n()) %>% 
-  mutate(proportion = num_records/sum(num_records))
+  mutate(proportion = num_records/sum(num_records),
+         total_num = sum(num_records))
 
 
