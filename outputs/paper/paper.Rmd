@@ -114,6 +114,9 @@ estimate_votes <- cell_counts %>%
 
 estimate_votes
 
+estimate_votes %>% mutate(status = if_else(predicted_vote>=0.50,"win","loss")) %>% group_by(status) %>% tally(
+)
+
 ```
 
 
