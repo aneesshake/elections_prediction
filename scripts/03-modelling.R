@@ -33,6 +33,10 @@ survey_data <-
   survey_data %>%
   mutate(vote_2020 = ifelse(vote_2020 == "Donald Trump", 1, 0))
 
+
+
+
+
 survey_data %>% 
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data))  # no class bias for our response variable - results are fairy equal
 
