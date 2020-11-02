@@ -17,7 +17,10 @@ library(maps)
 library(ggthemes)
 library(mapproj)
 
+
+##Static variables##
 us <- map_data("state")
+
 us <- us %>% mutate(region = case_when(region == "district of columbia"~"washington", TRUE ~ region))
 party_colors <- c("#FF4040","#0000FF")
 
@@ -66,8 +69,8 @@ survey_data_reduced <-
 
 
 
-#creating this little ethnicity mapping to make the lower code cleaner
-
+#creating this little ethnicity mapping to make the lower code cleaner, we'll join our survey_data_reduced later to make the ethnicities consistent with ACS data
+#as opposed to writing out every level, we're extracting our levels from the dataset.
 race_ethnicity <- attr(survey_data_reduced$race_ethnicity, "levels")
 us_ethnicity_mapping <- data.frame("race" = c("white",
                                               "black",
@@ -86,6 +89,7 @@ us_ethnicity_mapping <- data.frame("race" = c("white",
                                               "other race, nec"),race_ethnicity)
 
 
+#
 survey_data_reduced <-survey_data_reduced %>% 
   filter(vote_intention == "Yes, I will vote") %>% # Keep observations of those who intend to vote in the upcoming 2020 election
   filter(vote_2020 == "Donald Trump"| vote_2020 == "Joe Biden") %>% # Since we're only looking for a binary result, we're filtering for respondents that would've voted for Trump or Biden. By nature of the filter conditions, we'd be removing all other types of responses.
@@ -119,12 +123,17 @@ survey_data_reduced <-
 
 saveRDS(survey_data_reduced, file = "inputs/cleaned_data/individual-survey.rds")
 
-### GRAPHING
+### GRAPHING ###
+
+#these graph were done as EDA to see if there were any notable trends
 s <- survey_data_reduced %>% 
   select(vote_2016, race) %>% 
   group_by(race, vote_2016) %>% 
   summarise(n = n()) %>% 
   mutate(freq = n/sum(n))
+
+
+
 
 
 ## 2016 vote by race

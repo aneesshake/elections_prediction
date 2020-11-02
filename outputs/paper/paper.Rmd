@@ -28,6 +28,7 @@ library(ResourceSelection)
 library(maps)
 library(mapproj)
 library(caret)
+library(statebins)
 ```
 
 # Introduction
@@ -40,7 +41,7 @@ library(caret)
  ## Individual Survey Data
  
  ## Post-stratification Data
-As previously mentioned, our data is from two different datasets; the Democracy Fund + UCLA Nationscape Wave 50 dataset, and the 2018 1-year American Community Survey (ACS) dataset. They each contain both qualitative and quantitative data. To forecast the elections, we are using the Nationscape Wave 50 dataset. In regard to the Nationscape Wave 50 dataset, a few of its strengths are the variety in variables considered, and the quality of the survey responses. With respect to its weaknesses, it is likely that the data contains sampling error and/or coverage error. One of the various strengths of the  ACS dataset is its ability to be customized with pre-specified (or pre-selected?) variables and sample size before download. Although there is a wide range of variables to choose from, being able to select only those which we needed made the exploratory data analysis process much more manageable than it could have otherwise been (with all possible variables). Furthermore, since sample size can be pre-specified to a limit of about 3.2 million people, the larger the sample size is set to, the greater the odds that the target population is represented with the data. In terms of weaknesses of the ACS dataset, there are none all that significant. Some minor concerns, however, are potential measurement error, processing error, and/or adjustment error in the data.
+As previously mentioned, our data is from two different datasets; the Democracy Fund + UCLA Nationscape Wave 50 dataset(Tausanovitch and Vavreck, 2020), and the 2018 1-year American Community Survey (ACS) dataset(Ruggles et al, 2020). They each contain both qualitative and quantitative data. To forecast the elections, we are using the Nationscape Wave 50 dataset. In regard to the Nationscape Wave 50 dataset, a few of its strengths are the variety in variables considered, and the quality of the survey responses. With respect to its weaknesses, it is likely that the data contains sampling error and/or coverage error. One of the various strengths of the  ACS dataset is its ability to be customized with pre-specified (or pre-selected?) variables and sample size before download. Although there is a wide range of variables to choose from, being able to select only those which we needed made the exploratory data analysis process much more manageable than it could have otherwise been (with all possible variables). Furthermore, since sample size can be pre-specified to a limit of about 3.2 million people, the larger the sample size is set to, the greater the odds that the target population is represented with the data. In terms of weaknesses of the ACS dataset, there are none all that significant. Some minor concerns, however, are potential measurement error, processing error, and/or adjustment error in the data.
   The Democracy Fund + UCLA Nationscape is "one of the largest public opinion surveys ever conducted -- interviewing people in nearly every county, congressional district, and mid-sized U.S. city in the leadup to the 2020 election." Consequently, interviewing "roughly 6,250 per week" was part of the survey methodology employed by Nationscape. As such, the Nationscape Wave 50 dataset contains results for 6,479 interviews conducted during the week of June 25-July 1, 2020. It can be accessed by visiting https://www.voterstudygroup.org/publication/nationscape-data-set and submitting a request to access the data. By providing your full name and email address, you will then be emailed a link to the page where it can be downloaded. 
   At first glance of the Wave 50 data, we noted that it contains 265 variables. This is noteworthy because it allows a more complete picture of voter attitude to be derived from the data compared to if there were less variables. Another strength of this dataset is the overall quality of responses from those surveyed. More specifically, the data does not contain any duplicate records, inappropriate entries, or poor entries (e.g. typos, misspellings); hence, making it easier to work with. This high quality of survey responses can be partially attributed to the fact that "Nationscape samples are provided by Lucid, a market research platform that runs an online exchange for survey respondents." What is more, the individuals belonging to the sample are required to "complete an attention check before completing the [online] survey." With this method of sample selection, along with the precaution taken to ensure their attentiveness, it is unlikely for survey respondents to submit low-quality responses. 
   The main weakness of the Nationscape Wave 50 dataset is the likelihood that it includes sampling error and/or coverage error. While the goal of the Nationscape survey is to determine American voter attitudes, making inferences based only on the Wave 50 dataset would result in sample bias. This is because the target population is all American citizens age 18 years and older, whereas the sample frame is Lucid's online exchange for survey respondents, and the sample is a set of 6,479 individuals from said online exchange which match "a set of
@@ -88,7 +89,7 @@ coefs <- readRDS(here::here("outputs/model","coefficients.rds"))
 knitr::kable(coefs, caption = " Table 1: Model Coefficients", digits = 2) 
 
 ```
-In logistic regression, collinearity implies that we have predictor variables that are highly correlated; that is, they have a linear relationship. This is possible when you have a larger number of variables in a model, but having collinearity in multiple variables can lead to unstable estimates and inaccurate variances, which can affect confidence intervals. This could lead to incorrect inferences about the relationship between our response variable and explanatory variables @doi:10.1080/09720502.2010.10700699. Thus, it is imperative to check for any correlated variables in our model to avoid these issues. The value of the Variance Inflation Factor(VIF) in for the explanatory variables can give us a measure of collinearity our model. VIF values should be less than 5 to guarantee that collinearity is not an issue. We can see in table 2 below that all VIF values are less than 5, so collinearity will not be a concern for our model. 
+In logistic regression, collinearity implies that we have predictor variables that are highly correlated; that is, they have a linear relationship. This is possible when you have a larger number of variables in a model, but having collinearity in multiple variables can lead to unstable estimates and inaccurate variances, which can affect confidence intervals. This could lead to incorrect inferences about the relationship between our response variable and explanatory variables [@doi:10.1080/09720502.2010.10700699]. Thus, it is imperative to check for any correlated variables in our model to avoid these issues. The value of the Variance Inflation Factor(VIF) in for the explanatory variables can give us a measure of collinearity our model. VIF values should be less than 5 to guarantee that collinearity is not an issue. We can see in table 2 below that all VIF values are less than 5, so collinearity will not be a concern for our model. 
 ```{r, echo=FALSE}
 cor <- readRDS(here::here("outputs/model","cor.rds"))
 knitr::kable(cor, caption =  "Checking Model Collinearity", digits = 2)
@@ -130,14 +131,29 @@ post_strat_estimates <- estimates_with_margins %>%
   group_by(state_name) %>% 
   summarise(predicted_vote = sum(predict_prop), lower = sum(l_predict), upp = sum(u_predict)) %>% group_by(state_name) %>% ungroup()
 
-post_strat_estimates %>% mutate(status = if_else(predicted_vote>=0.50,"win","loss")) %>% group_by(status) %>% tally(
-)
+
+
+
+post_strat_estimates <- post_strat_estimates %>% 
+  mutate(biden_vote_proportion = 1-predicted_vote,
+         conservative_election_status = if_else(lower %>% between(0.48,0.52),"toss-up",
+                                                 if_else(lower > 0.52, "win","loss")),
+         liberal_election_status  = if_else(upp %>% between(0.48,0.52),"toss-up",
+                                                 if_else(upp > 0.52, "win","loss")),
+         middle_ground_election_status = if_else(predicted_vote %>% between(0.48,0.52),"toss-up",
+                                                 if_else(predicted_vote > 0.52, "win","loss")))
 
 ```
 
 # Results
 
+All our analysis was done using R[@CiteR].
 
+
+The graphs for our variables are done in similar fashion for each of our variables. First, the difference in their distributions between both datasets is displayed. Then, showing the relationship between those variables and voting preferences is shown. The purpose of such a display is to showcase the effect of the variables, and then how a change in the distribution will affect the result. For instance, we may observe that women are more likely to vote for Biden, and then subsequently we notice that there are more women in the ACS census. We will go in-depth about the implications of these observations in the discussion section.
+
+
+## comparison on age
 ```{r age, echo=FALSE, include=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data"}
 individual_age_dist<- individual_survey %>% 
   group_by(age) %>% 
@@ -164,13 +180,70 @@ Looking at (Figure \@ref(fig:age)), we observe a shift in age distributions betw
 
 
 
+## comparison on race
+
+```{r}
+individual_sex_dist<- individual_survey %>% 
+  group_by(sex) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "Nationscape")
+
+post_strat_sex_dist <- post_strat %>% 
+  group_by(sex) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "ACS")
+
+individual_sex_dist %>% 
+  union(post_strat_sex_dist) %>% 
+  ggplot(aes(x = sex, y = percentage)) + 
+  geom_col() + 
+  facet_grid(~data_source) + 
+  theme_economist_white()
+
+```
 
 
+```{r}
+#figure to see 2020 voting by sex
+vote_2020_sex <- individual_survey %>% 
+  mutate(vote_2020 = if_else(vote_2020 == 1,"Donald Trump","Joe Biden")) %>% 
+  group_by(sex,vote_2020) %>% 
+  tally() %>% 
+  ggplot(aes(x=sex, y = n)) + 
+  geom_col() + 
+  facet_grid(~vote_2020)
+
+
+#figure to see 2016 voting by sex
+vote_2016_sex <- individual_survey %>% 
+  group_by(sex,vote_2016) %>% 
+  tally() %>% 
+  ggplot(aes(x=sex, y = n)) + 
+  geom_col() + 
+  facet_grid(~vote_2016)
+
+
+
+library(patchwork)
+vote_2020_sex + vote_2016_sex
+```
+
+Figure (@fig) indicates that a man is much more likely to vote for Trump than a woman is. This tren
+
+
+
+
+
+(@fig)
 ```{r, echo = FALSE} 
 
 # estimated proportion of votes by State
 post_strat_estimates %>%
-ggplot(aes(y = predicted_vote, x =state_name, color = "MRP estimate")) + geom_point() +
+ggplot(aes(y = predicted_vote, x = state_name, color = "MRP estimate")) + geom_point() +
 geom_errorbar(aes(ymin = lower, ymax = upp), width = 0) +
 ylab("Proportion of Trump Supporters") +
 xlab("State") +
@@ -179,34 +252,35 @@ group_by(state_name, vote_2020) %>% summarise(n = n()) %>% group_by(state_name) 
 mutate(prop = n/sum(n)) %>% filter(vote_2020==1),
 aes(state_name, prop, color = "Raw data")) + theme_minimal() +
 scale_color_brewer(palette = "Set1") + theme(legend.position = "bottom") + theme(legend.title = element_blank()) + 
-  theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 5)) + coord_flip() +labs(title = "2020 Predicted Popular Vote by State", subtitle = "Compating redicted popular vote by state using raw data and MRP")
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 5)) + coord_flip() +labs(title = "2020 Predicted Popular Vote by State", subtitle = "Comparing predicted popular vote by state using raw data and MRP")
 ```
 
-```{r, echo = FALSE}
+```{r heatmap, echo = FALSE, fig.cap="Heatmap showcasing model predictions at a state-level"}
 # Sorting State wins
-election_wins <- post_strat_estimates %>% mutate(winner = if_else(predicted_vote>=0.50,"Trump","Biden")) %>% group_by(state_name
-)
+election_wins <- 
+  post_strat_estimates %>% 
+  mutate(winner = if_else(predicted_vote>=0.50,"Trump","Biden")) %>% 
+  group_by(state_name)
+
 election_wins$state <- str_to_title(as.character(election_wins$state_name))
+
 election_wins <- election_wins %>% filter(state != "district of columbia")
 
 # Plotting state wins
-statebins(election_wins, value_col="winner", ggplot2_scale_function = scale_fill_manual, values = c(Trump = "#2166ac", Biden = "#b2182b"), name = "state") +
+statebins(election_wins, value_col="winner", ggplot2_scale_function = scale_fill_manual, values = c(Trump ="#b2182b" , Biden = "#2166ac"), name = "state") +
   theme_statebins(legend_position="right")
 
 
 
 ```
 
+Figure(\@ref(fig:heatmap)) shows the predictions of our model on the post-stratified dataset. This figure ignores close calls and has a binary Trump or Biden result.
 
 
+```{r}
+post_strat_estimates %>% group_by(conservative_election_status) %>% summarise(num_states = n()) %>% rename(election_status = conservative_election_status) %>%  knitr::kable(caption = "Outcome of election")
+```
 
-All our analysis was done using R[@CiteR]
-
-
-Comparisons to ACS data and Nationscape data
-
-
-throw a few distributions in here to show the differences in distributions, and then tie each one in the discussion section to the potential implications of such a distribution. For instance, ACS data shows that there are more higher income earners than in Nationscape. Our model shows a strong effect between income and voting for a certain candidate.
 
 
 
@@ -215,6 +289,19 @@ throw a few distributions in here to show the differences in distributions, and 
 ## comparison on race
 
 ##
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Discussion
 

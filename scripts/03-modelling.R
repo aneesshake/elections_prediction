@@ -1,6 +1,6 @@
 # Uncomment these (by deleting the #) if you need to install the packages
 #### Preamble ####
-# Purpose: Prepare predictive model using individual survey data We will be downloading the ACS data from the aforementioned site
+# Purpose: Prepare predictive model using individual survey data and ACS data. Both these datasets have been prepared and cleaned using 01-data_cleaning-survey.R and 02-data_cleaning-post-strat.R. You must run those beforehand
 # Author: Anees Shaikh, Jaffa Romain, Lu Mu, Cameron Fryer
 # Data: 02 November 2020
 # Contact: anees.shaikh@mail.utoronto.ca or jaffa.romain@mail.utoronto.ca
@@ -18,7 +18,7 @@ library(stringr)
 library(brms)
 library(gtsummary)
 
-# loading in individual_data
+# loading in cleaned individual data
 
 survey_data <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
 
@@ -36,7 +36,7 @@ summary(survey_data)
 survey_data %>% 
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data))  # no class bias for our response variable - results are fairy equal
 
-# building model
+# building model, a logistic regression where vote_2020 is modelled by sex, age, race, hispan
 model <- glm(vote_2020 ~ sex + age + race + hispan, family=binomial(link=logit),
             data = survey_data)
 
