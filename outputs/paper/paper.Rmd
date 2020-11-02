@@ -22,6 +22,7 @@ library(tinytex)
 library(readr)
 library(here)
 library(dplyr)
+library(sjPlot)
 ```
 
 # Introduction
@@ -79,9 +80,11 @@ post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
 
 
 #Loading in the final model and the coefficents of the model in this cell. Please note that the outputs of those models are being stored in the outputs/model directory. The here package should give you the same result but if it doesn't then you may have to manually enter the same directory.
+
 final_model <- readRDS(here::here("outputs/model","final_model.rds"))
 coefs <- readRDS(here::here("outputs/model","coefficients.rds"))
 knitr::kable(c, caption = " Table 1: Model Coefficients") %>% kableExtra::kable_styling(latex_options = "scale_down")
+
 ```
 In logistic regression, collinearity implies that we have predictor variables that are highly correlated; that is, they have a linear relationship. This is possible when you have a larger number of variables in a model, but having collinearity in multiple variables can lead to unstable estimates and inaccurate variances, which can affect confidence intervals. This could lead to incorrect inferences about the relationship between our response variable and explanatory variables @doi:10.1080/09720502.2010.10700699. Thus, it is imperative to check for any correlated variables in our model to avoid these issues. The value of the Variance Inflation Factor(VIF) in for the explanatory variables can give us a measure of collinearity our model. VIF values should be less than 5 to guarantee that collinearity is not an issue. We can see in table 2 below that all VIF values are less than 5, so collinearity will not be a concern for our model. 
 ```{r}
@@ -89,13 +92,25 @@ cor <- readRDS(here::here("outputs/model","cor.rds"))
 knitr::kable(cor, caption =  "Checking Model Collinearity", digits = 2)
 ```
 
+```{r}
+plot_model(final_model, vline.color = "red",  transform = NULL, title = "Figure _: Odds Ratios of the Logistic Regression model")
+```
 
 ```{r}
 # make predictions using our model with data from post-strat data set
 
-cell_counts$estimate <- model %>% predict(newdata = cell_counts)
+cell_counts$estimate <- predict(final_model, newdata = cell_counts)
 
-cell_counts%>% mutate(predict_prop = estimate*proportion) %>% group_by(state_name) %>% summarize(alp_predict = sum(predict_prop))
+# post-stratified estimates - number of trump votes
+estimate_votes <- cell_counts %>% mutate(predict_prop = proportion * estimate) %>% group_by(state_name) %>% summarise(pred_vote = sum(predict_prop))
+estimate_votes
+
+
+
+
+
+
+
 
 ```
 
@@ -107,8 +122,8 @@ cell_counts%>% mutate(predict_prop = estimate*proportion) %>% group_by(state_nam
 
 
 ```{r, echo=FALSE, include=FALSE}
-
-
+# by state
+estimates <- estimates %>% mutate(num_votes = n*estimate)
 ```
 
 
