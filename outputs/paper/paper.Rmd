@@ -21,7 +21,7 @@ library(tidyverse)
 library(tinytex)
 library(readr)
 library(here)
-library(patchwork)
+library(dplyr)
 ```
 
 # Introduction
@@ -30,16 +30,6 @@ To accurately predict the winner of the United States 2020 presidential election
 .....
 
 # Data
-
-
-
-```{r, echo=FALSE, include=FALSE}
-#loading in our 2 cleaned datasets
-
-individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
-post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
-
-```
 
 Our data is of penguins (Figure \@ref(fig:bills)).
 
@@ -80,24 +70,46 @@ The logit function $logit(x) = log(x/1-x)$ maps the range (0, 1) to $(-\infty, \
 Its inverse function $logit^-1(x) = e^x/(1+e^x)$ maps back to the unit range. 
 The model's output is bounded between 0 and 1,  mapping the outputs into a binary outcome. The output tells us the probability that some person $i$, will vote for Trump depends on their age, sex, state, household income, and whether the voter is Hispanic. 
 
-We are running our regression model using the 'glm()' function in [R]. The fitted model results in the following coefficients:
+We fit our regression model using the `glm()` function in [`R`].  We can see from table 1, which was made using `kable` from `knitr`,  that the fitted model results in the following coefficients:
 ```{r}
+# loading data sets and cell counts for MRP
+cell_counts <- readRDS(here::here("inputs/cleaned_data", "cell_counts.rds"))
+individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
+post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
 
 
 #Loading in the final model and the coefficents of the model in this cell. Please note that the outputs of those models are being stored in the outputs/model directory. The here package should give you the same result but if it doesn't then you may have to manually enter the same directory.
 final_model <- readRDS(here::here("outputs/model","final_model.rds"))
-coefficients <- readRDS(here::here("outputs/model","coefficients.rds"))
-
+coefs <- readRDS(here::here("outputs/model","coefficients.rds"))
+knitr::kable(c, caption = " Table 1: Model Coefficients") %>% kableExtra::kable_styling(latex_options = "scale_down")
+```
+In logistic regression, collinearity implies that we have predictor variables that are highly correlated; that is, they have a linear relationship. This is possible when you have a larger number of variables in a model, but having collinearity in multiple variables can lead to unstable estimates and inaccurate variances, which can affect confidence intervals. This could lead to incorrect inferences about the relationship between our response variable and explanatory variables @doi:10.1080/09720502.2010.10700699. Thus, it is imperative to check for any correlated variables in our model to avoid these issues. The value of the Variance Inflation Factor(VIF) in for the explanatory variables can give us a measure of collinearity our model. VIF values should be less than 5 to guarantee that collinearity is not an issue. We can see in table 2 below that all VIF values are less than 5, so collinearity will not be a concern for our model. 
+```{r}
 cor <- readRDS(here::here("outputs/model","cor.rds"))
+knitr::kable(cor, caption =  "Checking Model Collinearity", digits = 2)
+```
+
+
+```{r}
+# make predictions using our model with data from post-strat data set
+
+cell_counts$estimate <- model %>% predict(newdata = cell_counts)
+
+cell_counts%>% mutate(predict_prop = estimate*proportion) %>% group_by(state_name) %>% summarize(alp_predict = sum(predict_prop))
 
 ```
+
+
+*** add another diagnostic test
 
 
 # Results
 
 
+```{r, echo=FALSE, include=FALSE}
 
 
+```
 
 
 
@@ -113,36 +125,6 @@ throw a few distributions in here to show the differences in distributions, and 
 
 
 ## comparison on age
-
-(Figure \@ref(fig:age)) 
-```{r age, fig.cap="Difference in Age distribution between both datasets", echo = FALSE, fig.width=8, fig.height=4}
-
-
-individual_age_dist<- individual_survey %>% 
-  group_by(age) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(percentage = 100 * num_records/sum(num_records),
-         total_num = sum(num_records),
-         data_source = "Nationscape")
-
-post_strat_age_dist <- post_strat %>% 
-  group_by(age) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(percentage = 100 * num_records/sum(num_records),
-         total_num = sum(num_records),
-         data_source = "ACS")
-
-individual_age_dist %>% 
-  union(post_strat_age_dist) %>% 
-  ggplot(aes(x = age, y = percentage)) + 
-  geom_col() + 
-  facet_grid(~data_source) + 
-  theme_economist_white() +
-  labs(Title = )
-
-
-```
-
 
 ## comparison on race
 
