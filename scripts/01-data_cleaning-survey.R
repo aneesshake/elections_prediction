@@ -111,6 +111,11 @@ survey_data_reduced <- survey_data_reduced %>%
                          age <= 44 ~ "25-44",
                          age <= 64 ~ "45-64",  
                          age >= 65 ~ "65+")) 
+survey_data_reduced <-
+  survey_data_reduced %>%
+  mutate(vote_2020 = ifelse(vote_2020 == "Donald Trump", 1, 0))
+
+
 
 saveRDS(survey_data_reduced, file = "inputs/cleaned_data/individual-survey.rds")
 

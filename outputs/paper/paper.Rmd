@@ -22,17 +22,25 @@ library(tinytex)
 library(readr)
 library(here)
 library(dplyr)
-library(sjPlot)
+library(ggplot2)
+library(ggthemes)
+library(ResourceSelection)
+library(maps)
+library(mapproj)
+library(caret)
 ```
 
 # Introduction
 
-To accurately predict the winner of the United States 2020 presidential election is difficult, as many different factors are involved.
+
 .....
 
 # Data
 
-As previously mentioned, our data is from two different datasets; the Democracy Fund + UCLA Nationscape Wave 50 dataset, and the 2018 1-year American Community Survey (ACS) dataset. They each contain both qualitative and quantitative data. In regard to the Nationscape Wave 50 dataset, a few of its strengths are the variety in variables considered, and the quality of the survey responses. With respect to its weaknesses, it is likely that the data contains sampling error and/or coverage error. One of the various strengths of the  ACS dataset is its ability to be customized with pre-specified (or pre-selected?) variables and sample size before download. Although there is a wide range of variables to choose from, being able to select only those which we needed made the exploratory data analysis process much more manageable than it could have otherwise been (with all possible variables). Furthermore, since sample size can be pre-specified to a limit of about 3.2 million people, the larger the sample size is set to, the greater the odds that the target population is represented with the data. In terms of weaknesses of the ACS dataset, there are none all that significant. Some minor concerns, however, are potential measurement error, processing error, and/or adjustment error in the data.
+ ## Individual Survey Data
+ 
+ ## Post-stratification Data
+As previously mentioned, our data is from two different datasets; the Democracy Fund + UCLA Nationscape Wave 50 dataset, and the 2018 1-year American Community Survey (ACS) dataset. They each contain both qualitative and quantitative data. To forecast the elections, we are using the Nationscape Wave 50 dataset. In regard to the Nationscape Wave 50 dataset, a few of its strengths are the variety in variables considered, and the quality of the survey responses. With respect to its weaknesses, it is likely that the data contains sampling error and/or coverage error. One of the various strengths of the  ACS dataset is its ability to be customized with pre-specified (or pre-selected?) variables and sample size before download. Although there is a wide range of variables to choose from, being able to select only those which we needed made the exploratory data analysis process much more manageable than it could have otherwise been (with all possible variables). Furthermore, since sample size can be pre-specified to a limit of about 3.2 million people, the larger the sample size is set to, the greater the odds that the target population is represented with the data. In terms of weaknesses of the ACS dataset, there are none all that significant. Some minor concerns, however, are potential measurement error, processing error, and/or adjustment error in the data.
   The Democracy Fund + UCLA Nationscape is "one of the largest public opinion surveys ever conducted -- interviewing people in nearly every county, congressional district, and mid-sized U.S. city in the leadup to the 2020 election." Consequently, interviewing "roughly 6,250 per week" was part of the survey methodology employed by Nationscape. As such, the Nationscape Wave 50 dataset contains results for 6,479 interviews conducted during the week of June 25-July 1, 2020. It can be accessed by visiting https://www.voterstudygroup.org/publication/nationscape-data-set and submitting a request to access the data. By providing your full name and email address, you will then be emailed a link to the page where it can be downloaded. 
   At first glance of the Wave 50 data, we noted that it contains 265 variables. This is noteworthy because it allows a more complete picture of voter attitude to be derived from the data compared to if there were less variables. Another strength of this dataset is the overall quality of responses from those surveyed. More specifically, the data does not contain any duplicate records, inappropriate entries, or poor entries (e.g. typos, misspellings); hence, making it easier to work with. This high quality of survey responses can be partially attributed to the fact that "Nationscape samples are provided by Lucid, a market research platform that runs an online exchange for survey respondents." What is more, the individuals belonging to the sample are required to "complete an attention check before completing the [online] survey." With this method of sample selection, along with the precaution taken to ensure their attentiveness, it is unlikely for survey respondents to submit low-quality responses. 
   The main weakness of the Nationscape Wave 50 dataset is the likelihood that it includes sampling error and/or coverage error. While the goal of the Nationscape survey is to determine American voter attitudes, making inferences based only on the Wave 50 dataset would result in sample bias. This is because the target population is all American citizens age 18 years and older, whereas the sample frame is Lucid's online exchange for survey respondents, and the sample is a set of 6,479 individuals from said online exchange which match "a set of
@@ -40,29 +48,15 @@ demographic criteria." It is very unlikely that a sample of 6,479 American citiz
   The last aspect of the Nationscape Wave 50 dataset to be considered is the survey questionnaire itself. Strengths of the questionnaire include its structure, the design and wording of the questions being asked, and the variety of choices for closed-ended questions. As to the structure of the questionnaire, it contains an extensive amount of questions from which differing political views can be revealed. Furthermore, the survey questions are asked in an order that does not influence the answer of respondents to subsequent questions. 
 In terms of the design and wording of the questions, they are closed-ended, and avoid the use of tricky wording. This is a strength of the questionnaire because it makes comparing the responses of individuals and thus, statistical analysis, much simpler than it would be with open-ended questions and/or troublesome language. The diverse number of options available to select as answers to the questions is a strength of the questionnaire because they are both mutually exclusive and exhaustive; hence, ensuring survey respondents are able to answer every question. With respect to weaknesses of the questionnaire, it seems that there are none other than its sheer length.
 
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-
-```
-
-Talk more about it.
-
-Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
-
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-
-
-```
-
-Talk way more about it. 
 
 
 
 # Model
 
-In order to forecast the popular vote of the U.S 2020 elections, multilevel logistic regression with post-stratification (MRP) was used. The individual survey gives sample data on voters of the general U.S population, and post-stratification allows us to reweight estimates, adjusting bias between our sample and the target population, so that we have a representative sample of likely voters @ForecastingArticle. To achieve this, cells are constructed using variables in the cleaned Nationscape survey such as age, household income, and race. The model is then trained on the survey using the proportions given by the  ACS post-stratification data set. This approach gives us an advantage when attempted to forecast voting, as we can use a broad survey to speak to subsets in the population, and also tends to be less expensive to collect than non-probability samples @rohansmrp. However, using this approach places limitations on how much we can interpret from the estimates. Although we can estimate voting intention in different demographic groups, it doesn't tell us any qualitative information on voting patterns. For example, we might be able to see how different age categories vote, but we won't have a measure of the policy preferences, or their views on the candidates.
+In order to forecast the popular vote of the U.S 2020 elections, multilevel logistic regression with post-stratification (MRP) was used. MRP is useful for when generalizing from a possibly non-representative poll kennedy2020know.  The individual survey gives sample data on voters of the general U.S population, and post-stratification allows us to re-weight estimates, adjusting bias between our sample and the target population, so that we have a representative sample of likely voters @ForecastingArticle. To achieve this, cells are constructed using variables in the cleaned Nationscape survey such as age, household income, and race. The model is then trained on the survey using the proportions given by the  ACS post-stratification data set. This approach gives us an advantage when attempted to forecast voting, as we can use a broad survey to speak to subsets in the population, and also tends to be less expensive to collect than non-probability samples @rohansmrp. However, using this approach places limitations on how much we can interpret from the estimates. Although we can estimate voting intention in different demographic groups, it doesn't tell us any qualitative information on voting patterns. For example, we might be able to see how different age categories vote, but we won't have a measure of the policy preferences, or their views on the candidates.
 
-Using the Nationscape,  a multilevel logistic regression model can be fitted to the survey data set to model the proportion of voters who will vote for Trump.
-Logistic regression can be used to model a binary dependent variable, which is the choice between the Republic candidate, Donald Trump, and the Democratic candidate, Joe Biden in our case. This would be the main reason for choosing this model, over another model such as a linear regression model, where the output isn't necessarily binary. However, this imposes limitations. As we cannot take into consideration any other candidates running in the election due to the binary outcome. Another weakness is **** The variable 'vote_2020' in the data set was used as dependent variable, with the variable return 1 for voters intending to vote for Trump, and 0. 
+Using the Nationscape data, a multilevel logistic regression model can be fitted to the survey data set to model the proportion of voters who will vote for Trump.
+Logistic regression can be used to model a binary dependent variable, which is the choice between the Republic candidate, Donald Trump, and the Democratic candidate, Joe Biden in our case. This would be the main reason for choosing this model, over another model such as a linear regression model, where the output isn't necessarily binary. However, this imposes limitations. As we cannot take into consideration any other candidates running in the election due to the binary outcome. The variable 'vote_2020' in the data set was used as the dependent variable (the variable we are trying to predict), with the variable returning 1 for voters intending to vote for Trump, and 0 if they are voting for Biden. 
 
 
 Our model uses the variables pertaining to age, state, race, sex, household income, and whether a voter is Hispanic to predict whether a respondent will vote for Trump or Biden in the elections. 
@@ -78,7 +72,7 @@ Its inverse function $logit^-1(x) = e^x/(1+e^x)$ maps back to the unit range.
 The model's output is bounded between 0 and 1,  mapping the outputs into a binary outcome. The output tells us the probability that some person $i$, will vote for Trump depends on their age, sex, state, household income, and whether the voter is Hispanic. 
 
 We fit our regression model using the `glm()` function in [`R`].  We can see from table 1, which was made using `kable` from `knitr`,  that the fitted model results in the following coefficients:
-```{r}
+```{r, echo=FALSE}
 # loading data sets and cell counts for MRP
 cell_counts <- readRDS(here::here("inputs/cleaned_data", "cell_counts.rds"))
 individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
@@ -91,60 +85,60 @@ post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
 
 final_model <- readRDS(here::here("outputs/model","final_model.rds"))
 coefs <- readRDS(here::here("outputs/model","coefficients.rds"))
-knitr::kable(coefs, caption = " Table 1: Model Coefficients") %>% kableExtra::kable_styling(latex_options = "scale_down")
+knitr::kable(coefs, caption = " Table 1: Model Coefficients", digits = 2) 
 
 ```
 In logistic regression, collinearity implies that we have predictor variables that are highly correlated; that is, they have a linear relationship. This is possible when you have a larger number of variables in a model, but having collinearity in multiple variables can lead to unstable estimates and inaccurate variances, which can affect confidence intervals. This could lead to incorrect inferences about the relationship between our response variable and explanatory variables @doi:10.1080/09720502.2010.10700699. Thus, it is imperative to check for any correlated variables in our model to avoid these issues. The value of the Variance Inflation Factor(VIF) in for the explanatory variables can give us a measure of collinearity our model. VIF values should be less than 5 to guarantee that collinearity is not an issue. We can see in table 2 below that all VIF values are less than 5, so collinearity will not be a concern for our model. 
-```{r}
+```{r, echo=FALSE}
 cor <- readRDS(here::here("outputs/model","cor.rds"))
 knitr::kable(cor, caption =  "Checking Model Collinearity", digits = 2)
 ```
 
-```{r}
-plot_model(final_model, vline.color = "red",  transform = NULL, title = "Figure _: Odds Ratios of the Logistic Regression model")
+```{r, echo=FALSE}
+ htst <- hoslem.test(final_model$y, fitted(final_model), g=10)
+htst
 ```
+Before the model can be used for any predictions, we must also check that our model fits our data well, and meets any assumptions made by the model. The Hosmer-Lemeshow goodness of fit test assesses whether or not the observed events match expected events in subgroups of the model. For this test, the p-value can be used to assess goodness of fit. A smaller p-value indicates strong evidence against a good fit. In the case of our model, we can see in table 4 that we have a very large p-value of 0.9, indicating no evidence of poor fit.
 
-```{r}
+| Table 4: Hosmer and Lemeshow goodness of fit (GOF) test 	|    	|         	|
+|---------------------------------------------------------	|----	|---------	|
+| X-squared                                               	| df 	| p-value 	|
+| 3.5                                                     	| 8  	| 0.9     	|
+
+```{r, echo=FALSE}
 # make predictions using our model with data from post-strat data set
 
 cell_counts
 
 
 cell_counts$estimate <- predict(final_model, newdata = cell_counts, type = "response")
+#  prediction intervals
+# fitted value - error to get margin of error
+se_md <- predict(final_model, newdata = cell_counts, type = "response", se.fit = T)
 
-# post-stratified estimates - number of trump votes
-estimate_votes <- cell_counts %>% 
-  mutate(predict_prop = prop * estimate) %>% 
+ lwr <-  cell_counts$estimate - 1.96*se_md$se.fit
+ upper <- cell_counts$estimate + 1.96*se_md$se.fit
+
+# all estimates with lower and upper bounds
+estimates_with_margins <- cell_counts %>% mutate(n = num_records * estimate) %>% cbind(cell_counts, lwr, upper)
+# removing duplicate column name estimate
+estimates_with_margins <- estimates_with_margins[, !duplicated(colnames(estimates_with_margins))]
+
+# post-stratified estimates - number of trump votes with prediction intervals
+post_strat_estimates <- estimates_with_margins %>% 
+  mutate(predict_prop = prop * estimate, l_predict = lwr * prop, u_predict = upper * prop) %>% 
   group_by(state_name) %>% 
-  summarise(predicted_vote = sum(predict_prop)) %>% ungroup()
+  summarise(predicted_vote = sum(predict_prop), lower = sum(l_predict), upp = sum(u_predict)) %>% group_by(state_name) %>% ungroup()
 
-estimate_votes
-
-estimate_votes %>% mutate(status = if_else(predicted_vote>=0.50,"win","loss")) %>% group_by(status) %>% tally(
+post_strat_estimates %>% mutate(status = if_else(predicted_vote>=0.50,"win","loss")) %>% group_by(status) %>% tally(
 )
 
 ```
 
-
-*** add another diagnostic test
-
-
 # Results
-
-```{r, echo=FALSE, include=FALSE}
-# by state
-estimates <- estimates %>% mutate(num_votes = n*estimate)
-```
-
-
-
-
-
 
 
 ```{r age, echo=FALSE, include=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data"}
-
-
 individual_age_dist<- individual_survey %>% 
   group_by(age) %>% 
   summarise(num_records = n()) %>% 
@@ -172,31 +166,36 @@ Looking at (Figure \@ref(fig:age)), we observe a shift in age distributions betw
 
 
 
-```{r}
-individual_hhincome_dist<- individual_survey %>% 
-  group_by(household_income) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(percentage = 100 * num_records/sum(num_records),
-         total_num = sum(num_records),
-         data_source = "Nationscape") %>% rename(hhincome_group = household_income)
+```{r, echo = FALSE} 
 
-post_strat_hhincome_dist <- post_strat %>% 
-  group_by(hhincome_group) %>% 
-  summarise(num_records = n()) %>% 
-  mutate(percentage = 100 * num_records/sum(num_records),
-         total_num = sum(num_records),
-         data_source = "ACS")
-
-individual_hhincome_dist %>% 
-  union(post_strat_hhincome_dist) %>% 
-  ggplot(aes(x = forcatshhincome_group, y = percentage)) + 
-  geom_col() + 
-  facet_grid(~data_source) + 
-  theme_economist_white()
-
+# estimated proportion of votes by State
+post_strat_estimates %>%
+ggplot(aes(y = predicted_vote, x =state_name, color = "MRP estimate")) + geom_point() +
+geom_errorbar(aes(ymin = lower, ymax = upp), width = 0) +
+ylab("Proportion of Trump Supporters") +
+xlab("State") +
+geom_point(data = individual_survey %>%
+group_by(state_name, vote_2020) %>% summarise(n = n()) %>% group_by(state_name) %>%
+mutate(prop = n/sum(n)) %>% filter(vote_2020==1),
+aes(state_name, prop, color = "Raw data")) + theme_minimal() +
+scale_color_brewer(palette = "Set1") + theme(legend.position = "bottom") + theme(legend.title = element_blank()) + 
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 5)) + coord_flip() +labs(title = "2020 Predicted Popular Vote by State", subtitle = "Compating redicted popular vote by state using raw data and MRP")
 ```
 
+```{r, echo = FALSE}
+# Sorting State wins
+election_wins <- post_strat_estimates %>% mutate(winner = if_else(predicted_vote>=0.50,"Trump","Biden")) %>% group_by(state_name
+)
+election_wins$state <- str_to_title(as.character(election_wins$state_name))
+election_wins <- election_wins %>% filter(state != "district of columbia")
 
+# Plotting state wins
+statebins(election_wins, value_col="winner", ggplot2_scale_function = scale_fill_manual, values = c(Trump = "#2166ac", Biden = "#b2182b"), name = "state") +
+  theme_statebins(legend_position="right")
+
+
+
+```
 
 
 

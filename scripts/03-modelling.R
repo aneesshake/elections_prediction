@@ -29,10 +29,6 @@ summary(survey_data)
 
 # change vote_2020 results to binary result
 # 1: Trump, 0: Biden
-survey_data <-
-  survey_data %>%
-  mutate(vote_2020 = ifelse(vote_2020 == "Donald Trump", 1, 0))
-
 
 
 
@@ -54,17 +50,5 @@ collin <- car::vif(model) # no collinearity
 c <- broom::tidy(model)
 
 saveRDS(c, file = "outputs/model/coefficients.rds")
-
-
-
-### Training on indivual survey
-set.seed(10)
-train <- survey_data %>% sample_frac(.70)
-predict <- predict(model,train, type = 'response')
-table_mat <- table(train$vote_2020, predict > 0.5)
-table_mat
-accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
-accuracy_Test
-# 63% - could be improved
-
+  
 
