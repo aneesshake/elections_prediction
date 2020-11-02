@@ -22,9 +22,14 @@ us <- us %>% mutate(region = case_when(region == "district of columbia"~"washing
 party_colors <- c("#FF4040","#0000FF")
 
 
-#the little mapping below allows us to easily match state abbreviations to state names, thank you professor rohan alexander for suggesting this neat method.
+
+
+
+#the little mapping below allows us to easily match state abbreviations to state names, thank you professor rohan alexander for suggesting this neat method.We're adding dc as a state here since both this survey and the ACS dataset regard it as such.
+#to do so, we're creating a small tibble that we'll union 
+district_columbia <- tibble(state = c("DC"), state_name =c("district of columbia"))
 us_states_mapping <-  tibble(state.abb, state_name = tolower(state.name)) %>% 
-  rename(state = state.abb)
+  rename(state = state.abb) %>% union(district_columbia)
 
 
 
