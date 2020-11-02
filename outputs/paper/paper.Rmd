@@ -101,24 +101,18 @@ plot_model(final_model, vline.color = "red",  transform = NULL, title = "Figure 
 ```{r}
 # make predictions using our model with data from post-strat data set
 
+cell_counts
+
+
 cell_counts$estimate <- predict(final_model, newdata = cell_counts, type = "response")
 
 # post-stratified estimates - number of trump votes
 estimate_votes <- cell_counts %>% 
-  mutate(predict_prop = proportion * estimate) %>% 
-  group_by(total_num,state_name) %>% 
-  summarise(predicted_vote = sum(predict_prop)) %>% 
-  mutate(state_prediction = total_num*predicted_vote)
-
-
+  mutate(predict_prop = prop * estimate) %>% 
+  group_by(state_name) %>% 
+  summarise(predicted_vote = sum(predict_prop)) %>% ungroup()
 
 estimate_votes
-
-
-
-
-
-cell_counts %>% arrange(num_records)
 
 ```
 

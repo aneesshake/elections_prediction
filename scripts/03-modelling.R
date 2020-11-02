@@ -41,7 +41,7 @@ survey_data %>%
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data))  # no class bias for our response variable - results are fairy equal
 
 # building model
-model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state_name, family=binomial(link=logit),
+model <- glm(vote_2020 ~ sex + age + race + hispan, family=binomial(link=logit),
             data = survey_data)
 
 
