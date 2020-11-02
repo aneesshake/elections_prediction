@@ -130,8 +130,10 @@ cell_counts <- reduced_data %>%
   group_by(stateicp,sex,age,race,household_income, hispan) %>% 
   summarise(num_records = n()) %>% ungroup() %>% 
   mutate(proportion = num_records/sum(num_records),
-         total_num = sum(num_records)) %>% arrange(desc(proportion))
-names(cell_counts)[names(cell_counts) == "stateicp"] <- "state_name"
+         total_num = sum(num_records)) %>% 
+  arrange(desc(proportion)) %>% 
+  rename(state_name = stateicp)
+
 
 saveRDS(cell_counts,file = "inputs/cleaned_data/cell_counts.rds")
 

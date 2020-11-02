@@ -106,7 +106,7 @@ survey_data_reduced <- survey_data_reduced %>%
                          ifelse(hispanic == "Mexican", "mexican", 
                                 ifelse(hispanic == "Cuban", "cuban", 
                                        ifelse(hispanic == "Puerto Rican", "puerto rican", "other"))))) %>% 
-  mutate( sex = case_when(gender == "Female" ~ "female", gender == "Male"~ "male")) %>% 
+  mutate(sex = case_when(gender == "Female" ~ "female", gender == "Male"~ "male")) %>% 
   mutate(age = case_when(age <= 24 ~ "18-24", 
                          age <= 44 ~ "25-44",
                          age <= 64 ~ "45-64",  
