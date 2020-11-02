@@ -188,13 +188,6 @@ individual_hhincome_dist %>%
 
 
 
-```{r, echo=FALSE, include=FALSE}
-# by state
-estimates <- estimates %>% mutate(num_votes = n*estimate)
-```
-
-
-
 
 
 All our analysis was done using R[@CiteR]

@@ -18,22 +18,27 @@ library(stringr)
 library(brms)
 library(gtsummary)
 
+# loading in individual_data
+
+survey_data <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
+
 # Look at some summary statistics to make sure the data seem reasonable
+
+
 summary(survey_data)
 
 # change vote_2020 results to binary result
 # 1: Trump, 0: Biden
-survey_data_reduced <-
-  survey_data_reduced %>%
+survey_data <-
+  survey_data %>%
   mutate(vote_2020 = ifelse(vote_2020 == "Donald Trump", 1, 0))
 
-saveRDS(survey_data_reduced, file = "inputs/survey_data.Rda")
-survey_data_reduced %>% 
-  summarise(raw_prop = sum(vote_2020) / nrow(survey_data_reduced))  # no class bias for our response variable - results are fairy equal
+survey_data %>% 
+  summarise(raw_prop = sum(vote_2020) / nrow(survey_data))  # no class bias for our response variable - results are fairy equal
 
 # building model
 model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state_name, family=binomial(link=logit),
-            data = survey_data_reduced)
+            data = survey_data)
 
 
 saveRDS(model, file = "outputs/model/final_model.rds")
@@ -44,13 +49,13 @@ saveRDS(model, file = "outputs/model/final_model.rds")
 collin <- car::vif(model) # no collinearity 
 c <- broom::tidy(model)
 
-saveRDS(c, file = "outputs/model/coefficient.rds")
+saveRDS(c, file = "outputs/model/coefficients.rds")
 
 
 
 ### Training on indivual survey
 set.seed(10)
-train <- survey_data_reduced %>% sample_frac(.70)
+train <- survey_data %>% sample_frac(.70)
 predict <- predict(model,train, type = 'response')
 table_mat <- table(train$vote_2020, predict > 0.5)
 table_mat
