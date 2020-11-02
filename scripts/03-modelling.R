@@ -16,6 +16,8 @@ library(tidyverse) # Helps make programming with R easier
 library(haven)
 library(stringr)
 library(brms)
+library(gtsummary)
+
 # Look at some summary statistics to make sure the data seem reasonable
 summary(survey_data)
 
@@ -30,7 +32,7 @@ survey_data_reduced %>%
   summarise(raw_prop = sum(vote_2020) / nrow(survey_data_reduced))  # no class bias for our response variable - results are fairy equal
 
 # building model
-model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state, family=binomial,
+model <- glm(vote_2020 ~ sex + age + race + household_income + hispan + state_name, family=binomial(link=logit),
             data = survey_data_reduced)
 
 
@@ -40,9 +42,9 @@ saveRDS(model, file = "outputs/model/final_model.rds")
 
 # Looking for indications of collinearity using correlation matrix of estimated coefficients
 collin <- car::vif(model) # no collinearity 
+c <- broom::tidy(model)
 
-
-coeffi <- broom::tidy(model) 
+saveRDS(c, file = "outputs/model/coefficient.rds")
 
 
 

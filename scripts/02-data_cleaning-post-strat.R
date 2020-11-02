@@ -66,7 +66,6 @@ reduced_data <-
 
 
 
-
 #removing respondents that have more than one race ascribed to them, as well as standardizing the black race name here
 reduced_data <- reduced_data %>% 
   mutate(race = if_else(race %in% race_to_be_rewritten, "black", as.character(reduced_data$race))) %>% 
@@ -87,7 +86,7 @@ reduced_data<- reduced_data %>%
 
 #income grouping, to match nationscape grouping
 reduced_data <- reduced_data %>%
-  mutate(hhincome_group = case_when(hhincome <= 14999 ~ "Less than $14,999",
+  mutate(household_income = case_when(hhincome <= 14999 ~ "Less than $14,999",
                                     hhincome <= 19999 ~ "$15,000 to $19,999",
                                     hhincome <= 24999 ~ "$20,000 to $24,999",
                                     hhincome <= 29999 ~ "$25,000 to $29,999",
@@ -118,8 +117,6 @@ reduced_data <- reduced_data %>%
 
 
 
-
-
 saveRDS(reduced_data, file = "inputs/cleaned_data/post-strat.rds")
 
 
@@ -130,11 +127,11 @@ saveRDS(reduced_data, file = "inputs/cleaned_data/post-strat.rds")
 
 
 cell_counts <- reduced_data %>% 
-  group_by(stateicp,sex,age,race,hhincome_group,foreign_born,hispan) %>% 
+  group_by(stateicp,sex,age,race,household_income, hispan) %>% 
   summarise(num_records = n()) %>% ungroup() %>% 
   mutate(proportion = num_records/sum(num_records),
          total_num = sum(num_records)) %>% arrange(desc(proportion))
-
+names(cell_counts)[names(cell_counts) == "stateicp"] <- "state_name"
 
 saveRDS(cell_counts,file = "inputs/cleaned_data/cell_counts.rds")
 
