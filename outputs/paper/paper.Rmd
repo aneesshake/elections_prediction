@@ -120,6 +120,16 @@ estimate_votes
 
 # Results
 
+```{r, echo=FALSE, include=FALSE}
+# by state
+estimates <- estimates %>% mutate(num_votes = n*estimate)
+```
+
+
+
+
+
+
 
 ```{r age, echo=FALSE, include=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data"}
 
