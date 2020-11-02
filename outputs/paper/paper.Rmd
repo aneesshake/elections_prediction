@@ -106,9 +106,57 @@ cell_counts%>% mutate(predict_prop = estimate*proportion) %>% group_by(state_nam
 # Results
 
 
-```{r, echo=FALSE, include=FALSE}
+```{r age, echo=FALSE, include=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data"}
 
 
+individual_age_dist<- individual_survey %>% 
+  group_by(age) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "Nationscape")
+
+post_strat_age_dist <- post_strat %>% 
+  group_by(age) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "ACS")
+
+individual_age_dist %>% 
+  union(post_strat_age_dist) %>% 
+  ggplot(aes(x = age, y = percentage)) + 
+  geom_col() + 
+  facet_grid(~data_source) + 
+  theme_economist_white()
+```
+Looking at (Figure \@ref(fig:age)), we observe a shift in age distributions between the two datasets. There is a slight peak in the 25-44 age group in the nationscape data. We see this flatten and then observe a significant increase in the 65+ age group, and a minor increase in the 18-24 age groups.
+
+
+
+
+
+```{r}
+individual_hhincome_dist<- individual_survey %>% 
+  group_by(household_income) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "Nationscape") %>% rename(hhincome_group = household_income)
+
+post_strat_hhincome_dist <- post_strat %>% 
+  group_by(hhincome_group) %>% 
+  summarise(num_records = n()) %>% 
+  mutate(percentage = 100 * num_records/sum(num_records),
+         total_num = sum(num_records),
+         data_source = "ACS")
+
+individual_hhincome_dist %>% 
+  union(post_strat_hhincome_dist) %>% 
+  ggplot(aes(x = forcatshhincome_group, y = percentage)) + 
+  geom_col() + 
+  facet_grid(~data_source) + 
+  theme_economist_white()
 ```
 
 
