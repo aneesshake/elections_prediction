@@ -125,7 +125,7 @@ saveRDS(survey_data_reduced, file = "inputs/cleaned_data/individual-survey.rds")
 
 ### GRAPHING ###
 
-#these graph were done as EDA to see if
+#these graph were done as EDA to see if there were any trends
 s <- survey_data_reduced %>% 
   select(vote_2016, race) %>% 
   group_by(race, vote_2016) %>% 
