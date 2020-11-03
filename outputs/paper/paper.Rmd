@@ -6,7 +6,7 @@ thanks: "Code and data are available at: https://github.com/aneesshake/elections
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: |
   | The purpose of this analysis is to forecast the results of the upcoming United States 2020 presidential election. In this paper, we first consider the Democracy Fund + UCLA Nationscape Wave 50 dataset, which contains the results of a survey (conducted June 25-July 1, 2020) on American voter attitudes. Thereafter, the survey data is used to train a model relating voter intent to a few explanatory variables. The model is then applied to the post-stratification dataset; namely, the results of the 2018 1-year American Community Survey (ACS). Since the ACS data pertains to individual persons and their characteristics, the associated use of our model allows us to conclude that Joe Biden will be the next President of the United States.|
-Keywords: forecasting; US 2020 election; Trump; Biden; multilevel regression with post-stratification
+Keywords: Forecasting; US 2020 election; Trump; Biden; Multilevel regression with post-stratification
 output:
   bookdown::pdf_document2:
     citation_package: natbib
@@ -180,7 +180,7 @@ Looking at (Figure \@ref(fig:age)), we observe a shift in age distributions betw
 
 
 
-## comparison on race
+## comparison on sex
 
 ```{r}
 individual_sex_dist<- individual_survey %>% 
@@ -207,7 +207,7 @@ individual_sex_dist %>%
 ```
 
 
-```{r}
+```{r sex_vote,fig.cap="Which individual did the candidate vote for? 2020 on the left, 2016 on the right"}
 #figure to see 2020 voting by sex
 vote_2020_sex <- individual_survey %>% 
   mutate(vote_2020 = if_else(vote_2020 == 1,"Donald Trump","Joe Biden")) %>% 
@@ -215,7 +215,7 @@ vote_2020_sex <- individual_survey %>%
   tally() %>% 
   ggplot(aes(x=sex, y = n)) + 
   geom_col() + 
-  facet_grid(~vote_2020)
+  facet_grid(~vote_2020)+ labs(x = "Sex", y = "Number of people")
 
 
 #figure to see 2016 voting by sex
@@ -224,7 +224,7 @@ vote_2016_sex <- individual_survey %>%
   tally() %>% 
   ggplot(aes(x=sex, y = n)) + 
   geom_col() + 
-  facet_grid(~vote_2016)
+  facet_grid(~vote_2016) + labs(x = "Sex", y = "Number of people")
 
 
 
@@ -232,13 +232,24 @@ library(patchwork)
 vote_2020_sex + vote_2016_sex
 ```
 
-Figure (@fig) indicates that a man is much more likely to vote for Trump than a woman is. This tren
+Figure (@fig) indicates that a man is much more likely to vote for Trump than a woman is. This trend is also observed in the 2016 elections when Hillary Clinton, a woman, ran for office.
 
 
 
 
 
-(@fig)
+```{r survey_election_results}
+individual_survey %>% mutate(vote_2020 = if_else(vote_2020 == 1,"Donald Trump","Joe Biden")) %>% group_by(vote_2020) %>% tally() %>% rename(candidate = vote_2020, votes = n ) %>% knitr::kable(caption = "Polling results for 2020 Election")
+```
+The above table indicates that Trump is most likely to win. This is captured from Nationscape data.
+
+
+```{r model2020prediction}
+post_strat_estimates %>% group_by(middle_ground_election_status) %>% tally() %>% rename(state_result = middle_ground_election_status, number = n) %>%  knitr::kable(caption = "Model Prediction for 2020")
+```
+
+
+
 ```{r, echo = FALSE} 
 
 # estimated proportion of votes by State
@@ -277,22 +288,6 @@ statebins(election_wins, value_col="winner", ggplot2_scale_function = scale_fill
 Figure(\@ref(fig:heatmap)) shows the predictions of our model on the post-stratified dataset. This figure ignores close calls and has a binary Trump or Biden result.
 
 
-```{r}
-post_strat_estimates %>% group_by(conservative_election_status) %>% summarise(num_states = n()) %>% rename(election_status = conservative_election_status) %>%  knitr::kable(caption = "Outcome of election")
-```
-
-
-
-
-## comparison on age
-
-## comparison on race
-
-##
-
-
-
-
 
 
 
@@ -305,16 +300,13 @@ post_strat_estimates %>% group_by(conservative_election_status) %>% summarise(nu
 
 # Discussion
 
-## First discussion point
+While American citizens play a significant role in electing the next President, it is safe to say that the results of the US federal election are watched closely by the entire world. It goes without saying that the results of this election will have implications around the world. To contextualize the results of our model and analysis, we need a quick and simplified lesson on the American electoral process. Unlike most democracies, such as Canada, the head of state is typically elected by a popular vote. In the US, however, the head of state is not elected by a popular vote. Instead, citizens vote for a representative, or an elector, that then elects the president. This group of electors forms the electoral college. The electoral college is tasked with electing the next President. If a candidate wins a state by even a small percent, they effectively win all the electors in the state. 
 
+with that background knowledge in mind, what do our poll results indicate? From Figure(\@ref(fig:survey_election_results)), we gather that Trump has a very slight lead. Multiple other polls have shown Biden to be in the lead(FiveThirtyEight, 2020). Now there are a few reasons as to why we may not want to use poll results to predict elections. Polls have of late garnered a lot of criticism due to their incorrect predictions of the 2016 Federal election results[@citeAapor]. Note that while they got the ultimate results wrong, they did get the popular vote prediction correct[@citeAapor].Nearly every national poll that year had Hillary Clinton winning, with some estimates of her having a 3% point lead[@citeAapor]. Ultimately, she won the popular vote by 2.1%. However, as mentioned previously, the US does not use a popular vote system. At the state level, the polls became less effective, indicating a Clinton lead again[@citeAapor]. State level polls do translate over to the electoral college a bit more effectively than national polls do. Another reason we may not want to overly rely on polls is yet another cautious tale from the 2016 election season. In that season, polls had over-represented college-graduates, a group that was more likely to vote for Clinton, thus tipping the scales even more in favour of Clinton[@citeAapor]. Capturing this over-representation is key to effectively predicting an election. As mentioned in the results section, some results were intentionally shown as their distributions and then their voting preferences. This was done to elucidate the effect of a difference in representation, akin to  the difference of representation of educated voters between polled data and actual populations. 
+From figure(\@ref(fig:age)), there is a clear shift in the distribution of ages. The increased representation of ages 65+ would likely predict a Trump win. Our model coefficient results also indicate that someone being in the oldest age group is more likely to vote for Trump, though significance is only slightly off. With an effectively older population compared to the Nationscape polling data, we can conclude that we would be likely see more votes for Trump coming out of our ACS group. Similarly, when looking at sex, we observe that there are more women in our ACS dataset than there are men, which is the opposite of the distribution found in the Nationscape data. Our model coefficient results again suggest that men are more likely to vote for Trump, and since we have more women in the ACS data, we would expect a higher percentage of Biden votes. This is further supported by other research that suggests that Trump has lost favour with white suburban women, a group he previously was well percevied by[@conroy2020]. A lot of models during the 2016 election season suggested a Clinton win, one of the few models that predicted a Trump win was a model that used MRP[@2016election]. It is worth mentioning that MRP isn't some sort of magic bullet as a few other MRP models during that time still predicted a Clinton win within the electoral college[@2016election]. How do current models fair? The primary model suggests that Trump has a 91% change of winning, in spite of Trump trailing Biden in the polls[@norpoth_2020]. 
 
+Overall, our model predicts a Trump majority.
 
-
-Talk about correlations between education and result
-
-To begin this discussion, we begin with a quick explanation of the US Federal voting system. This context is important for us to understand some key points and drawbacks with interpreting our model.
-
-Talk about previous research that has been done with similar models and the output of this model. Our model seems to indicate that Biden is going to win the popular vote. Throw some crap in here about 538 has certain polls that show a slight trump win. Show falling trump approvals and other things like that. This model has been thoroughly researched and has shown to be effective in multiple other contexts(needs citation)
 
 
 
@@ -338,6 +330,7 @@ Weaknesses and next steps should also be included.
 
 
 # References
+ADD FIVE THIRTY EIGHT CITATION
 
 Tausanovitch, Chris and Lynn Vavreck. 2020. Democracy Fund + UCLA Nationscape, October 10-17, 2019 (version 20200814). Retrieved from [URL].
 

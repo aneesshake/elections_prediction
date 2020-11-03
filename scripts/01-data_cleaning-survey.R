@@ -90,7 +90,7 @@ us_ethnicity_mapping <- data.frame("race" = c("white",
 
 
 #
-survey_data_reduced <-survey_data_reduced %>% 
+survey_data_reduced <- survey_data_reduced %>% 
   filter(vote_intention == "Yes, I will vote") %>% # Keep observations of those who intend to vote in the upcoming 2020 election
   filter(vote_2020 == "Donald Trump"| vote_2020 == "Joe Biden") %>% # Since we're only looking for a binary result, we're filtering for respondents that would've voted for Trump or Biden. By nature of the filter conditions, we'd be removing all other types of responses.
   filter(vote_2016 == "Donald Trump"| vote_2016 == "Hillary Clinton")
@@ -125,7 +125,7 @@ saveRDS(survey_data_reduced, file = "inputs/cleaned_data/individual-survey.rds")
 
 ### GRAPHING ###
 
-#these graph were done as EDA to see if there were any notable trends
+#these graph were done as EDA to see if
 s <- survey_data_reduced %>% 
   select(vote_2016, race) %>% 
   group_by(race, vote_2016) %>% 
