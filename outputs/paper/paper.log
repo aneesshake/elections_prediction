@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.10.25)  2 NOV 2020 21:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.10.25)  2 NOV 2020 22:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -598,18 +598,14 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 127.
 
-Package natbib Warning: Citation `vavreck_tausanovitch_2020' on page 1 undefine
-d on input line 142.
+Package natbib Warning: Citation `citevavreck_tausanovitch_2020' on page 1 unde
+fined on input line 142.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 142.
 
 Package natbib Warning: Citation `vavreck_tausanovitch_2020' on page 1 undefine
 d on input line 142.
-
-
-Package natbib Warning: Citation `tausanovitch_vavreck_reny_hayes_rudkin_2019' 
-on page 1 undefined on input line 144.
 
 
 Package natbib Warning: Citation `tausanovitch_vavreck_reny_hayes_rudkin_2019' 
@@ -638,16 +634,16 @@ Package pdftex.def Info: paper_files/figure-latex/ageind-1.pdf  used on input l
 ine 156.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Package natbib Warning: Citation `@agearticle' on page 2 undefined on input lin
-e 160.
+Package natbib Warning: Citation `agearticle' on page 2 undefined on input line
+ 160.
 
 
 LaTeX Warning: Reference `fig:ageind' on page 2 undefined on input line 160.
 
 [2] [3 <./paper_files/figure-latex/ageind-1.pdf>]
 
-Package natbib Warning: Citation `@citeBBC' on page 4 undefined on input line 1
-64.
+Package natbib Warning: Citation `citeBBC' on page 4 undefined on input line 16
+4.
 
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 66.
@@ -663,114 +659,105 @@ line 172.
 
 LaTeX Warning: Reference `fig:racedis' on page 4 undefined on input line 176.
 
+
+Package natbib Warning: Citation `cite270towin' on page 4 undefined on input li
+ne 178.
+
 [4 <./paper_files/figure-latex/racedis-1.pdf>] [5]
 
-Package natbib Warning: Citation `kennedy2020know' on page 6 undefined on input
- line 192.
-
-
-Package natbib Warning: Citation `alexander2020a' on page 6 undefined on input 
-line 192.
-
-
-Package natbib Warning: Citation `alexander2020a' on page 6 undefined on input 
-line 192.
-
-
-Package natbib Warning: Citation `@RAOS' on page 6 undefined on input line 199.
-
+Package natbib Warning: Citation `RAOS' on page 6 undefined on input line 199.
 
 [6]
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 3 on input line 295.
+(longtable)                in table 3 on input line 287.
 
 
-Package natbib Warning: Citation `@CiteR' on page 7 undefined on input line 321
-.
+Package natbib Warning: Citation `CiteR' on page 7 undefined on input line 313.
 
 
-LaTeX Warning: Reference `fig:age' on page 7 undefined on input line 328.
+
+LaTeX Warning: Reference `fig:age' on page 7 undefined on input line 320.
 
 
-Overfull \vbox (318.74405pt too high) has occurred while \output is active []
+Overfull \vbox (324.33406pt too high) has occurred while \output is active []
 
 [7]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 335.
-<paper_files/figure-latex/unnamed-chunk-5-1.pdf, id=86, 469.755pt x 325.215pt>
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 327.
+<paper_files/figure-latex/unnamed-chunk-5-1.pdf, id=87, 469.755pt x 325.215pt>
 File: paper_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/unnamed-chunk-5-1.pdf  used o
-n input line 374.
+n input line 366.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [8]
-<paper_files/figure-latex/sex_vote-1.pdf, id=95, 469.755pt x 325.215pt>
+<paper_files/figure-latex/sex_vote-1.pdf, id=94, 469.755pt x 325.215pt>
 File: paper_files/figure-latex/sex_vote-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/sex_vote-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/sex_vote-1.pdf  used on input
- line 405.
+ line 397.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Package natbib Warning: Citation `fig' on page 9 undefined on input line 409.
+Package natbib Warning: Citation `fig' on page 9 undefined on input line 401.
 
 [9 <./paper_files/figure-latex/unnamed-chunk-5-1.pdf>] [10 <./paper_files/figur
 e-latex/sex_vote-1.pdf>]
-<paper_files/figure-latex/unnamed-chunk-6-1.pdf, id=116, 469.755pt x 325.215pt>
+<paper_files/figure-latex/unnamed-chunk-6-1.pdf, id=115, 469.755pt x 325.215pt>
 
 File: paper_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/unnamed-chunk-6-1.pdf  used o
-n input line 462.
+n input line 454.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [11 <./paper_files/figure-latex/unnamed-chunk-6-1.pdf>]
-<paper_files/figure-latex/heatmap-1.pdf, id=127, 469.755pt x 325.215pt>
+<paper_files/figure-latex/heatmap-1.pdf, id=126, 469.755pt x 325.215pt>
 File: paper_files/figure-latex/heatmap-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/heatmap-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/heatmap-1.pdf  used on input 
-line 471.
+line 463.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-LaTeX Warning: Reference `fig:heatmap' on page 12 undefined on input line 475.
+LaTeX Warning: Reference `fig:heatmap' on page 12 undefined on input line 467.
 
 
 Package natbib Warning: Citation `citeAapor' on page 12 undefined on input line
- 482.
+ 474.
 
 
 Package natbib Warning: Citation `citeAapor' on page 12 undefined on input line
- 482.
+ 474.
 
 
 Package natbib Warning: Citation `citeAapor' on page 12 undefined on input line
- 482.
+ 474.
 
 
 Package natbib Warning: Citation `citeAapor' on page 12 undefined on input line
- 482.
+ 474.
 
 
 Package natbib Warning: Citation `citeAapor' on page 12 undefined on input line
- 482.
+ 474.
 
 
-LaTeX Warning: Reference `fig:age' on page 12 undefined on input line 483.
+LaTeX Warning: Reference `fig:age' on page 12 undefined on input line 475.
 
 
 Package natbib Warning: Citation `conroy2020' on page 12 undefined on input lin
-e 483.
+e 475.
 
 
 Package natbib Warning: Citation `2016election' on page 12 undefined on input l
-ine 483.
+ine 475.
 
 
 Package natbib Warning: Citation `2016election' on page 12 undefined on input l
-ine 483.
+ine 475.
 
 
 Package natbib Warning: Citation `norpoth_2020' on page 12 undefined on input l
-ine 483.
+ine 475.
 
 [12 <./paper_files/figure-latex/heatmap-1.pdf>] [13] [14]
 No file paper.bbl.
@@ -799,11 +786,11 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Here is how much of TeX's memory you used:
  11812 strings out of 481865
  170402 string characters out of 5929568
- 478199 words of memory out of 5000000
+ 477199 words of memory out of 5000000
  27881 multiletter control sequences out of 15000+600000
  598078 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 66i,8n,72p,1863b,476s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,8n,72p,1865b,476s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.e
 nc}{c:/Users/anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mat
 hsy.enc}{c:/Users/anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/l
@@ -827,10 +814,10 @@ anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/U
 sers/anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
 <c:/Users/anees/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti1
 0.pfb>
-Output written on paper.pdf (15 pages, 370676 bytes).
+Output written on paper.pdf (15 pages, 369219 bytes).
 PDF statistics:
- 231 PDF objects out of 1000 (max. 8388607)
- 184 compressed objects within 2 object streams
+ 230 PDF objects out of 1000 (max. 8388607)
+ 183 compressed objects within 2 object streams
  44 named destinations out of 1000 (max. 500000)
  31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
