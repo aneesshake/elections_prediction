@@ -51,7 +51,7 @@ Nationscape samples are provided by Lucid, a market research platform that uses 
   
  The data was cleaned to get our target population of eligible voters that intend to vote in the 2020 elections. Voters who didn't plan to vote or not eligible were filtered from the data set, and the variable pertaining to the 2020 election vote was cleaned to consist only of voters who plan on voting for either Trump or Biden. Before the process of fitting our model, we selected variables of interest that we felt gave insight on how different demographics vote. The resulting data set consisted of 3541 observations, and later reduced to the variables state, age, sex, Hispanic, race, and intended 2020 vote.
 
-```{r ageind, echo=FALSE, fig.cap="Distribution of Age in Nationscape data"}
+```{r ageind, echo=FALSE, fig.cap="Distribution of Age in Nationscape data", message = FALSE}
 individual_survey <- readRDS(here::here("inputs/cleaned_data","individual-survey.rds"))
 post_strat <- readRDS(here::here("inputs/cleaned_data","post-strat.rds"))
 
@@ -67,7 +67,11 @@ cont <- mutate(individual_survey, vote = (case_when(individual_survey$vote_2020 
        fill = "Nominee") +   
   theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 5))
 
-  
+s <-cont %>% 
+  select(vote_2016, race) %>% 
+  group_by(race, vote_2016) %>% 
+  summarise(n = n()) %>% 
+  mutate(freq = n/sum(n))
 ```
 
 Age:  The age of a respondent. Age was originally a nominal value(numerical), but the data was later grouped into categories for our predictive model, and to match the post-stratification data. This allowed for us to look at how age groups might influence the vote. The 2020 election marks the first time that Millennials and Gen Z will have an equal share of the number of eligible voters as Baby Boomers and earlier generations [@agearticle]. Older voters in the past have had higher turn out rates, so looking at how how age categories tend to vote can give insight on how this will play a factor in the future election. We can see in (Figure \@ref(fig:ageind)) that there is a much smaller proportion of younger voters, but this is the age group that seems to have the strongest Democratic support. 
@@ -79,11 +83,7 @@ Hispanic: This variable looks at whether a respondent is Hispanic or not. In the
 
 ```{r racedis, echo=FALSE, fig.cap= "Votes by Race in Nationscape data"}
 #these graph were done as EDA to see if there were any notable trends
-s <-cont %>% 
-  select(vote_2016, race) %>% 
-  group_by(race, vote_2016) %>% 
-  summarise(n = n()) %>% 
-  mutate(freq = n/sum(n))
+
 ## 2016 vote by race
 s %>% ggplot(aes(x = vote_2016, fill = race, group = race)) + 
   geom_bar(aes(y = freq), stat = "identity", position = "dodge", alpha = 2/3) + 
@@ -95,7 +95,7 @@ Race: (Figure \@ref(fig:racedis)) shows the distribution of votes in the 2016 fe
 State: When forecasting the election outcome, we will be predicting by State to see the majority vote in each. Certain states have been dominated by one particular party. For example, the Democratic party hasn't won the majority vote in the presidential election since 1992 [@cite270towin]. Since the election is based on electoral colleges as well, the number of Sates won by a candidate should give us a clear prospect for the dominating candidate. 
 
 
- ## Post-stratification Data
+## Post-stratification Data
 
   For our next step in our analysis, we use post-stratification to overcome any bias and have data representative of our target population. Conducted on a yearly basis, the American Community Survey "is a nationwide survey that collects and produces information on social, economic, housing, and demographic characteristics" of the United States population. In order to do so, the United States Census Bureau "mails questionnaires to approximately 295,000 addresses a month across the [country]." It should be noted that all the addresses receiving a letter to participate in the ACS are from a random sample chosen by the Census Bureau each month. Furthermore, every single address in the United States has approximately a 1 in 480 chance of being randomly selected to participate in the ACS during a given month. The exception to this comes from addresses that have already been selected to participate in the last 5 years; they are not allowed to be selected for another monthly sample. 
   To access the 2018 1-year ACS dataset, the first step is to visit https://usa.ipums.org/usa/ and create an account. From there, IPUMS will send you an email to verify your email address. By clicking the link contained in the email, you will be redirected to the IPUMS website and your email will be verified. Once on the website, you will be able to access the page where ACS sample and variables can be selected. To choose the 2018 1-year ACS as your sample, press "Select Samples". For this analysis, the single 2018 sample was chosen. The website allows for the user to choose the sample, as well as any variables of interest. After selecting the sample, you will be taken to a page wherein variable categories are listed. In addition, there is also an option to search for variables of interest. The variables that we selected for the dataset used in this paper are: region, stateicp, hhincome, sex, age, marst, race, hispan, bpl, citizen, educ, labforce, and ftotinc. When finished selecting variables, click "View Cart" near the top right of the page, and you will arrive at the cart page. This is your chance to look over all of the chosen variables. If you are happy with them, press the blue button near the middle of the page that reads "Create Data Extract." On the new page that you arrive at, there is a blue button near the bottom of the page with "Customize Sample Sizes" displayed in it. If you wish to change the size of your sample, then click the button. Now that our dataset has been fully customized, press the blue "Submit Extract" button at the very bottom of the page. Finally, you have reached the page from which your dataset can be downloaded, and the final step is to wait for the sample to be ready. 
@@ -158,7 +158,7 @@ Before the model can be used for any predictions, we must also check that our mo
 | X-squared                                               	| df 	| p-value 	|
 | 3.5                                                     	| 8  	| 0.9     	|
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include = FALSE}
 # make predictions using our model with data from post-strat data set
 
 cell_counts
@@ -205,8 +205,8 @@ All our analysis was done using R {@CiteR}.
 The graphs for our variables are done in similar fashion for each of our variables. First, the difference in their distributions between both datasets is displayed. Then, showing the relationship between those variables and voting preferences is shown. The purpose of such a display is to showcase the effect of the variables, and then how a change in the distribution will affect the result. For instance, we may observe that women are more likely to vote for Biden, and then subsequently we notice that there are more women in the ACS census. We will go in-depth about the implications of these observations in the discussion section.
 
 
-## comparison on age
-```{r age, echo=FALSE, include=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data"}
+## Comparison on Age
+```{r age, echo=FALSE, fig.cap="Distribution of Age between ACS and Nationscape data", message = FALSE}
 individual_age_dist<- individual_survey %>% 
   group_by(age) %>% 
   summarise(num_records = n()) %>% 
@@ -232,9 +232,9 @@ Looking at (Figure \@ref(fig:age)), we observe a shift in age distributions betw
 
 
 
-## comparison on sex
+## Comparison on Sex
 
-```{r}
+```{r, echo = FALSE,  message = FALSE}
 individual_sex_dist<- individual_survey %>% 
   group_by(sex) %>% 
   summarise(num_records = n()) %>% 
@@ -259,7 +259,7 @@ individual_sex_dist %>%
 ```
 
 
-```{r sex_vote,fig.cap="Which individual did the candidate vote for? 2020 on the left, 2016 on the right"}
+```{r sex_vote, fig.cap="Which individual did the candidate vote for? 2020 on the left, 2016 on the right", echo = FALSE, message = FALSE}
 #figure to see 2020 voting by sex
 vote_2020_sex <- individual_survey %>% 
   mutate(vote_2020 = if_else(vote_2020 == 1,"Donald Trump","Joe Biden")) %>% 
@@ -284,13 +284,13 @@ library(patchwork)
 vote_2020_sex + vote_2016_sex
 ```
 
-Figure (@fig) indicates that a man is much more likely to vote for Trump than a woman is. This trend is also observed in the 2016 elections when Hillary Clinton, a woman, ran for office.
+(Figure \@ref(fig:sex_vote) indicates that a man is much more likely to vote for Trump than a woman is. This trend is also observed in the 2016 elections when Hillary Clinton, a woman, ran for office.
 
 
 
 
 
-```{r survey_election_results}
+```{r survey_election_results, echo = FALSE}
 individual_survey %>% mutate(vote_2020 = if_else(vote_2020 == 1,"Donald Trump","Joe Biden")) %>% group_by(vote_2020) %>% tally() %>% rename(candidate = vote_2020, votes = n ) %>% knitr::kable(caption = "Polling results for 2020 Election")
 ```
 The above table indicates that Trump is most likely to win. This is captured from Nationscape data.
@@ -302,7 +302,7 @@ post_strat_estimates %>% group_by(middle_ground_election_status) %>% tally() %>%
 
 
 
-```{r, echo = FALSE} 
+```{r, echo = FALSE, message = FALSE} 
 
 # estimated proportion of votes by State
 post_strat_estimates %>%
