@@ -362,17 +362,6 @@ From figure(\@ref(fig:age)), there is a clear shift in the distribution of ages.
 
 Overall, our model predicts a Trump majority.
 
-
-
-
-
-
-
-One of the key things we have to explain here is how the electoral college works. Readers may remember the 2016 US election where Hillary Clinton won the popular vote, however, this didn't mean that she won the federal election. This was due to her not winning the electoral college. The electoral college is a body that is elected to determine who will be the next president of the US. This happened in 2000 when Bush didn't win the popular vote, but did end up winning the electoral college
-## Second discussion point
-
-## Third discussion point
-
 ## Weaknesses and next steps
 
 Weaknesses and next steps should also be included.
